@@ -50,3 +50,14 @@ class CircularLinkedList:
         if self.current is None:
             return None
         return self.current.data
+    
+    def display_playlist(self):
+        if self.head is None:
+            print("list is empty")
+            return None
+        current = self.head
+        for i in range(self.size):
+            marker = " ->" if current == self.current else ""
+            print(f"{i+1}. {os.path.basename(current.data)}{marker}")
+            current = current.next
+        
