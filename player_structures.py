@@ -60,4 +60,92 @@ class CircularLinkedList:
             marker = " ->" if current == self.current else ""
             print(f"{i+1}. {os.path.basename(current.data)}{marker}")
             current = current.next
+
+class Stack:
+    def __init__(self):
+        self.items =[]
+
+    def push(self,item):
+        self.items.append(item)
+
+    def pop(self):
+        if not self.is_empty():
+            return self.items.pop()
+        return None
+    def peek(self):
+        if not self.is_empty():
+            return self.items[-1]
+        return None
+    def is_empty(self):
+        return len(self.items) == 0
+    def size(self):
+        return len(self.items)
+
+class HuffmanNode:
+    def __init__(self,char,freq):
+        self.char = char
+        self.freq = freq
+        self.left = None
+        self.right = None
+
+    def __lt__(self,other):
+        return self.freq < other.freq
+    
+class HuffmanTree:
+    def __init__(self,text):
+        self.text = text
+        self.code = {}
+        self.root = self.build_tree()
+        self.build_code(self.root, "")
+
+    def build_tree(self):
+        frequency ={}
+        for char in self.text:
+            frequency[char] = frequency.get(char,0) +1
+
+        priorit_queue=[HuffmanNode(char,frequency)for char ,frequency in frequency.items()]
+        heapq.heapify(priorit_queue)
+
+        while len(priorit_queue) >1:
+
+            left = heapq.heappop(priorit_queue)
+            right = heapq.heappop(priorit_queue)
+
+            merged = HuffmanNode(None, left.freq + right.freq)
+            merged.left = left
+            merged.right = right
+            heapq.heappush(priorit_queue, merged)
+
+        return priorit_queue[0]
+    
+    def build_code(self,node, current_code):
+        if node is None:
+            return
+
+        if node.char is not None:
+            self.code[node.char] = current_code
+            return
+
+        self.build_code(node.left, current_code + "0")
+        self.build_code(node.right, current_code + "1")
+    def encode(self):
+        encoded_text = ""
+        for char in self.text:
+            encoded_text += self.codes[char]
+        return encoded_text
+    
+    def decode(self, encoded_text):
+        decoded_text = ""
+        current_node = self.root
         
+        for bit in encoded_text:
+            if bit == "0":
+                current_node = current_node.left
+            else:
+                current_node = current_node.right
+            
+            if current_node.char is not None:
+                decoded_text += current_node.char
+                current_node = self.root
+        
+        return decoded_text
